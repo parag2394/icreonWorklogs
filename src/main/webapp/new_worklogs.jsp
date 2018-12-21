@@ -328,16 +328,16 @@ body {
               
              <thead>
                 <tr class="warning" >
-                  <td ><h6>S.NO</h6></td>
+                  <td ><h6>S.No</h6></td>
                      <td ><h6>Project</h6></td>
-                    <td ><h6>WorkLog ID</h6></td>
+                    <td ><h6>JIRA Id</h6></td>
                      <td ><h6>Issue No.</h6></td>
-                      <td ><h6>Start Date</h6></td>
+                       <td ><h6>Start Date</h6></td>   
 <!--                       <td ><h6>Updated At</h6></td> -->
                        <td ><h6>Description</h6></td>
-                        <td ><h6>Author</h6></td>
-                         <td ><h6>Time Spent</h6></td>
-                         <td><h6>Approve</h6></td>
+                        <td ><h6>Resource</h6></td>
+                         <td ><h6>Time Logged</h6></td>
+                         <td><h6>Status</h6></td>
                       
                 </tr>
             </thead>
@@ -377,8 +377,8 @@ body {
 		        	        <td><%=obj[3]%></td>
 		        	        	        
 		        	        	        	        <td><%=obj[4]%></td>
-		       	        <td><%=obj[5]%></td>
-		       	        <td><%=obj[6]%> hours</td>
+		       	        <td><%=obj[5]%> </td>
+		       	         <td><%=obj[6]%> hours</td>
 		        
 		     
 		     <td>

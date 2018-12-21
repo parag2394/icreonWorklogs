@@ -288,16 +288,16 @@ body {
               
              <thead>
                 <tr class="warning" >
-                  <td ><h6>S.NO</h6></td>
+                  <td ><h6>S.No</h6></td>
                      <td ><h6>Project</h6></td>
-                    <td ><h6>WorkLog ID</h6></td>
+                    <td ><h6>JIRA Id</h6></td>
                      <td ><h6>Issue No.</h6></td>
-                      <td ><h6>Start Date</h6></td>
+                      <td ><h6>Start Date</h6></td> 
 <!--                       <td ><h6>Updated At</h6></td> -->
                        <td ><h6>Description</h6></td>
-                        <td ><h6>Author</h6></td>
-                         <td ><h6>Time Spent</h6></td>
-                         <td><h6>Approve Status</h6></td>
+                        <td ><h6>Resource</h6></td>
+                         <td ><h6>Time Logged</h6></td>
+                         <td><h6>Status</h6></td>
                       
                 </tr>
             </thead>
@@ -320,10 +320,10 @@ body {
 		       
 		        <td><%=ob[2]%></td>
 		         <td><%=ob[1]%></td>
-		        	        <td><%=ob[3]%></td>
+		        	       <td><%=ob[3]%></td>
 		        	        	        
 		        	     <td><%=ob[4]%></td>
-		       	        <td><%=ob[5]%></td>
+		       	        <td><%=ob[5]%> </td>
 		       	        <td><%=ob[6]%> hours</td>
 		       	         <td><b><span style="color:blue">NOT APPROVED</b></span></td>
         			
