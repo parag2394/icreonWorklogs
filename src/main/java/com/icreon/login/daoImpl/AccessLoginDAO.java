@@ -25,7 +25,7 @@ public class AccessLoginDAO implements LoginDAO {
 		SessionFactory sf = HibernateUtil.getSessionFactory();
 		Session session=sf.openSession();
 		Transaction tx=session.beginTransaction();
-		SQLQuery query = (SQLQuery) session.createSQLQuery("call ijp.authenticate_user(:p_username,:p_password)")
+		SQLQuery query = (SQLQuery) session.createSQLQuery("call icreonworklogs.authenticate_user(:p_username,:p_password)")
 				.setParameter("p_username", username)
 				.setParameter("p_password", password);
 		query.executeUpdate();

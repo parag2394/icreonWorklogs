@@ -110,6 +110,7 @@ body {
   <a href="test.jsp"><i class="fa fa-fw fa-home"></i>Home</a>
   <a class="active" href="approvedWorklogs.jsp">Approved Worklogs</a>
   <a href="unApprovedWorklogs.jsp">Pending Worklogs</a>
+  <a href="rejectedWorklogs.jsp">Rejected Worklogs</a>
   <a href="logout.jsp" align="right">Logout</a>
 </div>
 
@@ -288,11 +289,11 @@ body {
               
              <thead>
                 <tr class="warning" >
-                  <td ><h6>S.No</h6></td>
+                   <td ><h6>S.No</h6></td>
                      <td ><h6>Project</h6></td>
-                    <td ><h6>JIRA Id</h6></td>
+                    <td ><h6>Jira ID</h6></td>
                      <td ><h6>Issue No.</h6></td>
-                  <td ><h6>Start Date</h6></td>     
+                       <td ><h6>Start Date</h6></td> 
 <!--                       <td ><h6>Updated At</h6></td> -->
                        <td ><h6>Description</h6></td>
                         <td ><h6>Resource</h6></td>
@@ -323,9 +324,8 @@ body {
 		        	        <td><%=ob[3]%></td>
 		        	        	        
 		        	     <td><%=ob[4]%></td>
-		       	        <td><%=ob[5]%> </td>
-		       	          <td><%=ob[6]%> hours</td>
-		       	     
+		       	        <td><%=ob[5]%></td>
+		       	        <td><%=ob[6]%> hours</td>
 		       	         <td><b><span style="color:blue">APPROVED</b></span></td>
         			
 		       

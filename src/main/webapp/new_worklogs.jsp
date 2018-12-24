@@ -110,6 +110,7 @@ body {
   <a href="test.jsp"><i class="fa fa-fw fa-home"></i>Home</a>
  <a href="approvedWorklogs.jsp">Approved Worklogs</a>
  <a href="unApprovedWorklogs.jsp">Pending Worklogs</a>
+ <a href="rejectedWorklogs.jsp">Rejected Worklogs</a>
   <a href="logout.jsp" align="right">Logout</a>
  
   
@@ -271,50 +272,53 @@ body {
 
  <div class="container1 container-White py-10">
    
- <!-- Modal -->
-        <div id="myModal" class="modal fade modal-sm " role="dialog" align="center" id="modal_id">
-            <div class="modal-dialog modal-dialog-centered modal-sm">
+<!--   Modal -->
+<!--         <div id="myModal" class="modal fade modal-sm " role="dialog" align="center" id="modal_id"> -->
+<!--             <div class="modal-dialog modal-dialog-centered modal-sm"> -->
 
-                <!-- Modal content-->
-                <div class="modal-content">
-                    <div class="modal-header">
+<!--                 Modal content -->
+<!--                 <div class="modal-content"> -->
+<!--                     <div class="modal-header"> -->
                     
-<!--                   <img src="resources/loading.gif" height="2%" width="2%" id="loading_img"> -->
-<!--                   <br>  -->
-                  <h6><b><span style=color:#6b1381>Please click <input class="btn btn-primary" type="button" value="Approve All" disabled> carefully,<br>
-                  Once approved....changes can't be recovered.</span></b></h6>
+<!--                  <img src="resources/loading.gif" height="2%" width="2%" id="loading_img"> --> 
+<!--                  <br>  -->
+<!--                   <h6><b><span style=color:#6b1381>Please click <input class="btn btn-primary" type="button" value="Approve All" disabled> carefully,<br> -->
+<!--                   Once approved....changes can't be recovered.</span></b></h6> -->
                     
                       
                     
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title"></h4>
-                    </div>
-                    <div class="" align="center">
+<!--                         <button type="button" class="close" data-dismiss="modal">&times;</button> -->
+<!--                         <h4 class="modal-title"></h4> -->
+<!--                     </div> -->
+<!--                     <div class="" align="center"> -->
 
-<!--                        <div style="clear:both"> -->
+<!--                       <div style="clear:both"> -->
                        
 <!--                        Hello -->
 <!-- </div> -->
 
-                        <div class="modal-footer" align="center">
-                            <button type="button" id="bulkApprove" class="btn btn-default btn-primary">APPROVE ALL</button>
+<!--                         <div class="modal-footer" align="center"> -->
+<!--                             <button type="button" id="bulkApprove" class="btn btn-default btn-primary">APPROVE ALL</button> -->
                            
                
-                        </div>
-                    </div>
+<!--                         </div> -->
+<!--                     </div> -->
 
-                </div>
-            </div>
-        </div>  
-  
+<!--                 </div> -->
+<!--             </div> -->
+<!--         </div>   -->
 
+
+     <div id="divImage" style="display: none;height:75px;width:75px">
+         <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" >
+     </div>
 
 <div class="col-sm-12"> 
 
 
-   <div align="left">
-<button align="right" type="button" class="btn btn-default btn-primary" data-toggle="modal" data-target="#myModal" id="show_doc">Bulk Approve</button> 
- </div>
+<!--    <div align="left"> -->
+<!-- <button align="right" type="button" class="btn btn-default btn-primary" data-toggle="modal" data-target="#myModal" id="show_doc">Bulk Approve</button>  -->
+<!--  </div> -->
  <br>
 			
 			      <!-- Example DataTables Card-->
@@ -328,11 +332,11 @@ body {
               
              <thead>
                 <tr class="warning" >
-                  <td ><h6>S.No</h6></td>
+                   <td ><h6>S.No</h6></td>
                      <td ><h6>Project</h6></td>
-                    <td ><h6>JIRA Id</h6></td>
+                    <td ><h6>Jira ID</h6></td>
                      <td ><h6>Issue No.</h6></td>
-                       <td ><h6>Start Date</h6></td>   
+                       <td ><h6>Start Date</h6></td> 
 <!--                       <td ><h6>Updated At</h6></td> -->
                        <td ><h6>Description</h6></td>
                         <td ><h6>Resource</h6></td>
@@ -377,8 +381,8 @@ body {
 		        	        <td><%=obj[3]%></td>
 		        	        	        
 		        	        	        	        <td><%=obj[4]%></td>
-		       	        <td><%=obj[5]%> </td>
-		       	         <td><%=obj[6]%> hours</td>
+		       	        <td><%=obj[5]%></td>
+		       	        <td><%=obj[6]%> hours</td>
 		        
 		     
 		     <td>
@@ -391,8 +395,9 @@ body {
 		<input type="hidden" id="p_worklog<%=j%>" value="<%=worklog_id%>" >
 		<input type="hidden" id="p_issue<%=j%>" value="<%=issue_id%>" >
 		     <input class="btn btn-primary" type="button" value="Approve" id="approve_button<%=j%>"
-		       onclick="confirmation('p_project<%=j%>','p_worklog<%=j%>','p_issue<%=j%>','approve_button<%=j%>')" />
-	
+		       onclick="confirmation('p_project<%=j%>','p_worklog<%=j%>','p_issue<%=j%>','approve_button<%=j%>','reject_button<%=j%>')" />
+	<input class="btn btn-primary" type="button" value="Reject" id="reject_button<%=j%>"
+		       onclick="rejection('p_project<%=j%>','p_worklog<%=j%>','p_issue<%=j%>','reject_button<%=j%>','approve_button<%=j%>')" />
 	
 		<%  }
 		    %> 
@@ -400,11 +405,18 @@ body {
 		 <%    if(status==1)
 		     {
 		     %>
-		     <input class="btn" type="button"  value="Approved" id=""/>
+		     <input class="btn btn-primary" type="button"  value="Approved" id="" disabled/>
+		    
+		<%  }
+		 
+		 if(status==0)
+		 {
+			 %>
+		     <input class="btn btn-primary" type="button"  value="Rejected" id="" disabled/>
 		<%  }
 		    %> 
 		    
-		    
+		   
 		     
 		   
 		     
@@ -446,8 +458,12 @@ body {
      <script src="resources/js/jquery-1.8.3.min.js"></script>
      
       <script>
-   function confirmation(p,w,i,ab)
+   function confirmation(p,w,i,ab,st)
    {
+
+       $("#divImage").show();
+       window.scrollTo(0,0);
+
 	   var x=document.getElementById(p).value;
 	   var y=document.getElementById(w).value;
 	   var z=document.getElementById(i).value;
@@ -465,16 +481,64 @@ body {
            },
            success:function(data)
            {
-            	
+               $("#divImage").hide();
             //	alert(data);
             	var list = "";
            	var list = jQuery.parseJSON(data);
            	if(list==1)
            	{
-           	alert('Approved');
-          // 	$('#ab').val('Hello');
+           	alert('Approved and Sent Notification by Mail');
+           	
+        	//$("#st").hide();
            	document.getElementById(ab).value='Approved';
+           	document.getElementById(st).style.visibility = "hidden";
            	document.getElementById(ab).disabled = true;
+           
+           	}
+           	
+           	
+          
+           	
+           }
+       });
+   }
+   </script>
+   
+   
+   <script>
+   function rejection(p,w,i,ab,st1)
+   {
+       $("#divImage").show();
+	   var x=document.getElementById(p).value;
+	   var y=document.getElementById(w).value;
+	   var z=document.getElementById(i).value;
+	 //  alert(x);
+	 //  alert(y);
+	//   alert(z);
+	//alert(ab);
+	   $.ajax({
+           type: 'GET',
+           url: "updateApproveStatusToReject",
+           data: {
+        	project_id:x,
+           	worklog_id:y,
+           	issue_id:z
+           },
+           success:function(data)
+           {
+               $("#divImage").hide();
+            //	alert(data);
+            	var list = "";
+           	var list = jQuery.parseJSON(data);
+           	if(list==1)
+           	{
+           	alert('Rejected Sent Notification by Mail');
+          // 	$('#ab').val('Hello');
+         
+           	document.getElementById(ab).value='Rejected';
+           	document.getElementById(st1).style.visibility = "hidden";
+           	document.getElementById(ab).disabled = true;
+        	//document.getElementById(st1).disabled = true;
            	}
            	
            	
@@ -530,12 +594,12 @@ body {
        });
 
   
-       $(document).ready(function() {
-    	    $("#bulkApprove").click(function(){
-    	        alert("Reocrds Successfully Approved");
-    	        window.location.href = "approvedWorklogs.jsp";
-    	    }); 
-    	});
+    //   $(document).ready(function() {
+    //	    $("#bulkApprove").click(function(){
+    //	        alert("Reocrds Successfully Approved");
+    //	        window.location.href = "approvedWorklogs.jsp";
+    //	    }); 
+    //	});
    </script>
    
 

@@ -5,10 +5,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.icreon.GetWorklogs;
@@ -32,7 +29,7 @@ public class AllWorklogs {
 	
 	String username="rohit@icreon.com";
 	   
-    String password="********";
+    String password="Rrp@1993";
     
     List<Object[]> obj=null;
     
@@ -78,6 +75,7 @@ public class AllWorklogs {
 				@RequestParam("user")String user,
 				@RequestParam("FromDate")String fromDate,
 				@RequestParam("ToDate")String toDate,
+				@RequestParam("status")int status,
 				HttpServletRequest request,
 				HttpServletResponse response
 				) throws Throwable
@@ -85,8 +83,11 @@ public class AllWorklogs {
 		  PrintWriter out = response.getWriter();
 			response.setCharacterEncoding("UTF-8");
 			ModelAndView mv=new ModelAndView();
-			System.out.println("From Date is"+fromDate);
-			System.out.println("To Date is"+toDate);
+			System.out.println("Issue is "+issue);
+			System.out.println("User is "+user);
+			System.out.println("From Date is "+fromDate);
+			System.out.println("To Date is "+toDate);
+			System.out.println("Status is "+status);
 			
 			if(!issue.equals("0"))
 	        {
@@ -96,24 +97,42 @@ public class AllWorklogs {
 				 if(!user.equals("0"))
 			        {
 					
+					 System.out.println("User is not null");
 			        	if(toDate.equals(" ") && fromDate.equals(" "))
 			        	{
+			        		System.out.println("User is not null inside date check");
+			        		 System.out.println();
 			        		WorklogsDaoImpl wd=new WorklogsDaoImpl();
 				        	obj=wd.showSelectedWorklogsWrtUser(issue,user);
 			        	}
+						/*else if(fromDate =="" && toDate ==""){
+							System.out.println("3");
+							WorklogsDaoImpl wd=new WorklogsDaoImpl();
+							obj=wd.lastWeekLogs();
+						}*/
+			        	else if(fromDate !=null && fromDate!="" && toDate !=null && toDate !="" && status !=-1)
+		    			{
+		        		 System.out.println();
+		    				WorklogsDaoImpl wd=new WorklogsDaoImpl();
+		    	        	obj=wd.showSelectedWorklogsWrtAllAndStatus(issue,user,fromDate,toDate,status);
+	    			   }
 			        	else if(fromDate !=null && fromDate!="" && toDate !=null && toDate !="" )
 			    			{
+			        		 System.out.println();
 			    				WorklogsDaoImpl wd=new WorklogsDaoImpl();
 			    	        	obj=wd.showSelectedWorklogsWrtAll(issue,user,fromDate,toDate);
 		    			   }
 			        	else
 			        	{
+			        		System.out.println("User is not null inside date check 1111"+" user is "+user);
+			        		 System.out.println();
 			        		 WorklogsDaoImpl wd=new WorklogsDaoImpl();
 					        	obj=wd.showSelectedWorklogsWrtUser(issue,user);
 			        	}
 		            }
 				 else
 				 {
+					 System.out.println("Calling Only issues");
 					 WorklogsDaoImpl wd=new WorklogsDaoImpl();
 				     obj=wd.showSelectedWorklogs(issue);
 				 }
@@ -153,6 +172,25 @@ public class AllWorklogs {
 	    	
 	    }
 	 
+	 @GetMapping("/updateApproveStatusToReject")
+	    public void updateWorklogStatusTO_REJECTED(
+	    		@RequestParam(value="project_id")String p_project_id,
+	    		@RequestParam(value="worklog_id")String p_worklog_id,
+	    		@RequestParam(value="issue_id")String p_issue_id,
+	    		HttpServletRequest request,
+				HttpServletResponse response) throws JSONException, IOException{
+		 System.out.println("Update Controller Called");
+		 PrintWriter out = response.getWriter();
+			response.setCharacterEncoding("UTF-8");
+	    
+		 WorklogsDaoImpl wd=new WorklogsDaoImpl();
+ 	wd.updateSelectedWorklogStatusTORejected(p_project_id, p_worklog_id, p_issue_id);
+	        Gson gson = new Gson();
+			JsonElement element = gson.toJsonTree(1);
+			out.write(element.toString());
+	    	
+	    }
+	 
 	 @PostMapping("/getAuthors")
 	    public void getSelectedAuthors(
 	    		@RequestParam(value="issue")String issue,
@@ -185,6 +223,25 @@ public class AllWorklogs {
 	
 	        Gson gson = new Gson();
 			JsonElement element = gson.toJsonTree(approve_status);
+			out.write(element.toString());
+	    	
+	    }
+	 
+	 @GetMapping("/updateRejectedToApproveStatus")
+	    public void updateRejetedWorklogStatus(
+	    		@RequestParam(value="project_id")String p_project_id,
+	    		@RequestParam(value="worklog_id")String p_worklog_id,
+	    		@RequestParam(value="issue_id")String p_issue_id,
+	    		HttpServletRequest request,
+				HttpServletResponse response) throws JSONException, IOException{
+		 System.out.println("Update Controller Called");
+		 PrintWriter out = response.getWriter();
+			response.setCharacterEncoding("UTF-8");
+	    
+		 WorklogsDaoImpl wd=new WorklogsDaoImpl();
+ 	wd.updateRejectedWorklog(p_project_id, p_worklog_id, p_issue_id);;
+	        Gson gson = new Gson();
+			JsonElement element = gson.toJsonTree(1);
 			out.write(element.toString());
 	    	
 	    }

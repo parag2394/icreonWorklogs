@@ -89,7 +89,7 @@ public class Test {
 	        	SessionFactory sf = HibernateUtil.getSessionFactory();
 				Session session=sf.openSession();
 				Transaction tx=session.beginTransaction();
-				SQLQuery query = (SQLQuery) session.createSQLQuery("call ijp.pro_setWorklogs(:p_project_id,:p_issue_id,:p_worklog_id,"
+				SQLQuery query = (SQLQuery) session.createSQLQuery("call icreonworklogs.pro_setWorklogs(:p_project_id,:p_issue_id,:p_worklog_id,"
 						+ ":p_start_date,:p_description,:p_author,:p_time_spent,:p_status)")
 						.setParameter("p_project_id",project)
 						.setParameter("p_issue_id",issueNo)

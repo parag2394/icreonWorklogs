@@ -72,14 +72,28 @@
 							Password
 						</span>
 
-				<!--  		<a href="#" class="txt2 bo1 m-l-5">
-							Forgot?
-						</a>-->
+<!-- 						<a href="#" class="txt2 bo1 m-l-5"> -->
+<!-- 							Forgot? -->
+<!-- 						</a> -->
 					</div>
+
+
 					<div class="wrap-input100 validate-input" data-validate = "Password is required">
 						<input class="input100" type="password" name="password" id="password" placeholder="Please Enter Your Password">
 						<span class="focus-input100"></span>
 					</div>
+					
+					
+	<!--				
+					<div class="p-t-13 p-b-9">
+						<span class="txt1">
+							Token
+						</span>
+					</div>
+					<div class="wrap-input100 validate-input" data-validate = "Password is required">
+						<input class="input100" type="password" name="token" id="token" placeholder="Please Enter Your Jira Token">
+						<span class="focus-input100"></span>
+					</div>   -->
 
 					<div class="container-login100-form-btn m-t-17">
 						<button class="login100-form-btn" type="submit" onclick="mySubmit(this)">
@@ -87,16 +101,16 @@
 						</button>
 					</div>
 
-			<!--  		<div class="w-full text-center p-t-55">
-						<span class="txt2">
-							Not a member?
-						</span>
+<!-- 					<div class="w-full text-center p-t-55"> -->
+<!-- 						<span class="txt2"> -->
+<!-- 							Not a member? -->
+<!-- 						</span> -->
 
-						<a href="#" class="txt2 bo1">
-							Sign up now
-						</a>-->
+<!-- 						<a href="#" class="txt2 bo1"> -->
+<!-- 							Sign up now -->
+<!-- 						</a> -->
 						
-					</div>
+<!-- 					</div> -->
 					
 					
 				</form>

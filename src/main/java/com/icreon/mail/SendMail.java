@@ -13,21 +13,12 @@ public class SendMail{
 
         final String username = "apitesting02@gmail.com";
       //  final String username = "parag.chaudhari@icreon.com";
-        final String password = "********";
+        final String password = "qwerty@123";
 
 
-        public String sendEmail(Map<String, String> userMap, String p_worklog_id) {
+        public String sendEmail(final String subject,final String body,final String userEmailId) {
 
             final JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-
-            final String userEmailId = "apitesting02@gmail.com";
-         // final String userEmailId = userMap.get("Email");
-
-            String userName = userMap.get("Name");
-            String userDate = userMap.get("Date");
-
-            final String body = "Hi "+userName+",\n Your time log has been Approved.\n Details: Issue: "+p_worklog_id+"\n Date: "+userDate+"\n Thank you";
-            final String subject = "Time Log Approved in JIRA";
 
             System.out.println("Email Id :" + userEmailId);
 
@@ -61,4 +52,21 @@ public class SendMail{
 
         return "Mail Sent Successfully.";
 }
+
+        public boolean prepare_mail(Map<String, String> userMap, String p_issue_id,String to_status){
+
+            String userName = userMap.get("Name");
+            String userDate = userMap.get("Date");
+
+            //    String userEmailId = userMap.get("Email");
+            //  String userEmailId = "apitesting02@gmail.com";
+            String userEmailId = "parag.chaudhari@icreon.com";
+
+            String body = "Hi "+userName+",\n Your time log has been "+to_status+".\n Details: Issue: "+p_issue_id+"\n Date: "+userDate+"\n Thank you";
+            String subject = "Time Log Approved in JIRA";
+
+            sendEmail(subject,body,userEmailId);
+
+            return true;
+        }
 }

@@ -113,6 +113,7 @@ body {
 <!--   <a href="#contact"><i class="fa fa-fw fa-user"></i>Users</a> -->
   <a href="approvedWorklogs.jsp">Approved Worklogs</a>
     <a href="unApprovedWorklogs.jsp">Pending Worklogs</a>
+    <a href="rejectedWorklogs.jsp">Rejected Worklogs</a>
   <a href="logout.jsp" align="right">Logout</a>
 </div>
 
@@ -314,7 +315,7 @@ catch(Exception e)
 
 <div class="col-sm-4">
 <label for="" class="thick"><b>Select User</b></label>
-<select name="user" size="1" id="user" required="" class="form-control">
+<select name="user" size="1" id="user" class="form-control">
 <option value="0" >Select</option>
 <!-- <option value="Ravi Kumar">Ravi Kumar</option> -->
 <!-- <option value="Rohit Phutane">Rohit Phutane</option> -->
@@ -332,6 +333,16 @@ catch(Exception e)
 <div class="col-sm-4">
 <label for="" class="thick"><b>To Date</b><span style="color:red;"></span></label>
 <input class="form-control" type="date" autocomplete="off" value=" " name="ToDate" placeholder="Enter To Date" id="ToDate" />
+</div>
+
+<div class="col-sm-4">
+<label for="" class="thick"><b>Status</b><span style="color:red;"></span></label>
+<select name="status" size="1" id="status" required="" class="form-control">
+<option value="-1" >Select</option>
+<option value="1">Approved Worklogs</option>
+<option value="2">Pending Worklogs</option>
+<option value="0">Rejected Worklogs</option>
+</select>
 </div>
 
 
@@ -412,6 +423,7 @@ catch(Exception e)
                     	alert('Records Not Available');
                     	}
                     	 if(list!=''){
+                    		 $('#issues').append('<option value="0">Select</option>');
                     	   for (var i = 0; i < list.length; i++) {
                     		   $('#issues').append('<option value="' + list[i] + '">' + list[i]+ '</option>');
 

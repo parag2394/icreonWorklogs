@@ -34,11 +34,11 @@ public class LoginController {
 			List<Object[]> list=login.authenticate_user(request.getParameter("username"),request.getParameter("password"));
 			
 			
-		if(list.isEmpty())
+		if(list.isEmpty() || list==null)
 		{
 			out.println("<script type=\"text/javascript\">");  
   			out.println("alert('Incorrect username or password');");  
-  			out.println("location='user_login';");
+  			out.println("location='login.jsp';");
   			out.println("</script>");
 			//mv.setViewName("user_login");
 		}
