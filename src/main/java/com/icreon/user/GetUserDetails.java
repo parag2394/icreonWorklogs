@@ -74,7 +74,7 @@ public class GetUserDetails {
     private JSONObject callJiraAPI(String uri){
 
         String username="rohit@icreon.com";
-        String password="Rrp@1993";
+        String password="*****";
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getInterceptors().add(new BasicAuthorizationInterceptor(username,password));
