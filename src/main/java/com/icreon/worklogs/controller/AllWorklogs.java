@@ -20,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.icreon.GetWorklogs;
 import com.icreon.worklogs.daoImpl.WorklogsDaoImpl;
 
 
@@ -66,6 +65,7 @@ public class AllWorklogs {
         Gson gson = new Gson();
 		JsonElement element = gson.toJsonTree(issuList);
 		out.write(element.toString());
+
     	
     }
     
@@ -245,5 +245,15 @@ public class AllWorklogs {
 			out.write(element.toString());
 	    	
 	    }
+
+	    @GetMapping("/showLast7DaysData")
+		public List showLast7DaysData() throws JSONException, IOException{
+
+				WorklogsDaoImpl wd=new WorklogsDaoImpl();
+				List last7DaysWeeks = wd.lastWeekLogs();
+
+				return last7DaysWeeks;
+
+		}
 
 }

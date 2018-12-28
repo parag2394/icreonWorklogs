@@ -59,8 +59,8 @@ public class SendMail{
             String userDate = userMap.get("Date");
 
             //    String userEmailId = userMap.get("Email");
-            //  String userEmailId = "apitesting02@gmail.com";
-            String userEmailId = "parag.chaudhari@icreon.com";
+              String userEmailId = "apitesting02@gmail.com";
+            //  String userEmailId = "parag.chaudhari@icreon.com";
 
             String body = "Hi "+userName+",\n Your time log has been "+to_status+".\n Details: Issue: "+p_issue_id+"\n Date: "+userDate+"\n Thank you";
             String subject = "Time Log Approved in JIRA";

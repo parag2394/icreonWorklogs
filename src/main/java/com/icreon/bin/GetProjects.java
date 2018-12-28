@@ -1,4 +1,4 @@
-package com.icreon;
+package com.icreon.bin;
 
 import java.util.List;
 

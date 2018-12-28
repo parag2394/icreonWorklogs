@@ -25,7 +25,7 @@ public class AccessGetMenuDAO implements GetMenuDAO {
 
 			
 			Transaction tx=session.beginTransaction();
-			SQLQuery query = (SQLQuery) session.createSQLQuery("SELECT * FROM ijp.pro_getmenuitem(:user_id)")
+			SQLQuery query = (SQLQuery) session.createSQLQuery("SELECT * FROM icreonworklogs.pro_getmenuitem(:user_id)")
 					.setParameter("user_id",user_id);
 			 l=query.list();
 			 tx.commit();

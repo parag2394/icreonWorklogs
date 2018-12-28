@@ -88,6 +88,49 @@
             background-color: #6b1381;
             color: white;
         }
+
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+
     </style>
 </head>
 <body class="size-1140">
@@ -108,10 +151,10 @@
 
 <div class="topnav sticky">
     <a href="home"><i class="fa fa-fw fa-home"></i>Home</a>
-    <a  href="approvedWorklogs">Approved Worklogs</a>
-    <a class="active" href="unApprovedWorklogs">Pending Worklogs</a>
-    <a href="rejectedWorklogs">Rejected Worklogs</a>
-    <a href="logout" style="float:right">Logout</a>
+    <a  href="approvedWorklogs.jsp">Approved Worklogs</a>
+    <a href="unApprovedWorklogs.jsp">Pending Worklogs</a>
+    <a class="active" href="rejectedWorklogs.jsp">Rejected Worklogs</a>
+    <a href="logout" align="right">Logout</a>
 </div>
 
 <!-- <b>#6b1381</b> -->
@@ -276,6 +319,25 @@
         <!--       <div class="col-md-10 mx-auto"> -->
         <!--           <div class="form-group row">  -->
 
+        <%--<div id="divImage" style="display: none;height:75px;width:75px">
+            <img src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" >
+        </div>--%>
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div id="divImage" style="height:50px;width:50px">
+                    <img src="https://media.giphy.com/media/xTk9ZvMnbIiIew7IpW/giphy.gif" >
+                </div>
+                <p>Processing... Please wait (It may take few seconds)</p>
+            </div>
+
+        </div>
+
+
+
         <div class="col-sm-12">
 
             <!-- Example DataTables Card-->
@@ -299,6 +361,7 @@
                             <td ><h6>Resource</h6></td>
                             <td ><h6>Time Logged</h6></td>
                             <td><h6>Status</h6></td>
+                            <td><h6>Review</h6></td>
 
                         </tr>
                         </thead>
@@ -309,25 +372,35 @@
                                 try
                                 {
                                     WorklogsDaoImpl wd=new WorklogsDaoImpl();
-                                    List<Object[]> obj=wd.unApprovedWorklog();
-                                    int i=0;
+                                    List<Object[]> obj=wd.showRejectedWorklog();
+                                    int j=0;
                                     for(Object[] ob : obj)
                                     {
-                                        ++i;
+                                        ++j;
+
+                                        String project_id=(String)ob[0];
+                                        String worklog_id=(String)ob[1];
+                                        String issue_id=(String)ob[2];
 
                             %>
-                            <td><%=i%></td>
+                            <td><%=j%></td>
                             <td><%=ob[0]%></td>
 
-                         <%--   <td><%=ob[2]%></td>--%>
+                            <%-- 		        <td><%=ob[2]%></td> --%>
                             <td><%=ob[1]%></td>
                             <td><%=ob[3]%></td>
 
                             <td><%=ob[4]%></td>
                             <td><%=ob[5]%></td>
                             <td><%=ob[6]%> hours</td>
-                            <td><b><span style="color:blue">NOT APPROVED</b></span></td>
-
+                            <td><b><span style="color:blue">REJECTED</b></span></td>
+                            <td>
+                                <input type="hidden" id="p_project<%=j%>" value="<%=project_id%>" >
+                                <input type="hidden" id="p_worklog<%=j%>" value="<%=worklog_id%>" >
+                                <input type="hidden" id="p_issue<%=j%>" value="<%=issue_id%>" >
+                                <input class="btn btn-primary" type="button" value="Approve" id="approve_button<%=j%>"
+                                       onclick="confirmation('p_project<%=j%>','p_worklog<%=j%>','p_issue<%=j%>','approve_button<%=j%>')" />
+                            </td>
 
                         </tr>
                         <%
@@ -394,6 +467,54 @@
 <script type="text/javascript" src="resources/resources/js/buttons.print.min.js"></script>
 
 
+<script>
+    function confirmation(p,w,i,ab)
+    {
+        /*  $("#divImage").show();*/
+
+        // Get the modal
+
+        var modal = document.getElementById('myModal');
+        modal.style.display = "block";
+
+        var x=document.getElementById(p).value;
+        var y=document.getElementById(w).value;
+        var z=document.getElementById(i).value;
+        //  alert(x);
+        //  alert(y);
+        //   alert(z);
+        //alert(ab);
+        $.ajax({
+            type: 'GET',
+            url: "updateRejectedToApproveStatus",
+            data: {
+                project_id:x,
+                worklog_id:y,
+                issue_id:z
+            },
+            success:function(data)
+            {
+                $("#divImage").hide();
+                //	alert(data);
+                var list = "";
+                var list = jQuery.parseJSON(data);
+                if(list==1)
+                {
+                    alert('Approved and Sent Notification by Mail');
+                    // 	$('#ab').val('Hello');
+                    //  	document.getElementById(ab).value='Approved';
+                    //  	document.getElementById(ab).disabled = true;
+                    modal.style.display = "none";
+                    window.location.href = "rejectedWorklogs.jsp";
+                }
+
+
+
+
+            }
+        });
+    }
+</script>
 
 
 
@@ -406,13 +527,13 @@
             buttons: [
                 'excel', 'print'
             ]
+
         });
         $('#ex1').on( 'page.dt', function () {
             $('html, body').animate({
                 scrollTop: 0
             }, 300);
         } );
-
     });
 
 

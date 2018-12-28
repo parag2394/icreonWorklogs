@@ -5,13 +5,16 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.password">admin</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/icreonworklogs</property>
         <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">admin</property>
+     <!--   <property name="hibernate.connection.username">icreonworklogs</property>
+        <property name="hibernate.connection.password">dsfsdf4TYrurT4234#</property>-->
+
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-   
-    <!-- Drop the existing tables and create new one 
-        <property name="hbm2ddl.auto">update</property>  --> 
+
+    <!-- Drop the existing tables and create new one
+        <property name="hbm2ddl.auto">update</property>  -->
         
         
         <!-- Disable the second-level cache  -->

@@ -1,9 +1,6 @@
-package com.icreon;
+package com.icreon.util;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.sql.Date;
-import java.util.List;
 
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -18,9 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.icreon.util.HibernateUtil;
-
-public class Test {
+public class LoadJiraDbToLocalDb {
 	
 	String url="https://api.tempo.io/2/";
 	   
@@ -83,6 +78,7 @@ public class Test {
 	        	String description=jsonResults.getJSONObject(i).getString("description");
 	        	String author=jsonResults.getJSONObject(i).getJSONObject("author").getString("displayName");
 	        	int timeSpentSeconds =jsonResults.getJSONObject(i).getInt("timeSpentSeconds")/3600;
+	        	String updatedDate = (jsonResults.getJSONObject(i).getString("updatedAt")).substring(0,10);
 	            
 	      
 	        	
@@ -90,7 +86,7 @@ public class Test {
 				Session session=sf.openSession();
 				Transaction tx=session.beginTransaction();
 				SQLQuery query = (SQLQuery) session.createSQLQuery("call icreonworklogs.pro_setWorklogs(:p_project_id,:p_issue_id,:p_worklog_id,"
-						+ ":p_start_date,:p_description,:p_author,:p_time_spent,:p_status)")
+						+ ":p_start_date,:p_description,:p_author,:p_time_spent,:p_status, :p_updated_date)")
 						.setParameter("p_project_id",project)
 						.setParameter("p_issue_id",issueNo)
 						.setParameter("p_worklog_id",worklog)
@@ -99,6 +95,7 @@ public class Test {
 						.setParameter("p_author",author)
 						.setParameter("p_time_spent",timeSpentSeconds)
 						.setParameter("p_status",2)
+						.setParameter("p_updated_date",updatedDate);
 						;
 				query.executeUpdate();
 				//List<Object[]> l=query.list();
@@ -114,7 +111,7 @@ public class Test {
 	
 	public static void main(String[] args) throws ParseException {
 		// TODO Auto-generated method stub
-Test t=new Test();
+LoadJiraDbToLocalDb t=new LoadJiraDbToLocalDb();
 t.getDepartments();
 	}
 

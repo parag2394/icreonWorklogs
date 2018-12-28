@@ -352,5 +352,20 @@ System.out.println("Start dat    e is"+fromDate);
 		return weeklyLogList;
 	}
 
+	public List showLastSevenDaysWorklogs() {
+
+		SessionFactory sf = HibernateUtil.getSessionFactory();
+		Session session = sf.openSession();
+		Transaction tx = session.beginTransaction();
+		SQLQuery query = (SQLQuery) session.createSQLQuery("call icreonworklogs.pro_getLastSevenDaysWorklogs()");
+
+		//query.executeUpdate();
+
+		List<Object[]> list = query.list();
+		tx.commit();
+		session.close();
+
+		return list;
+	}
 
 }
