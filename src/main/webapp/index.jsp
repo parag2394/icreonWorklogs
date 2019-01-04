@@ -5,7 +5,8 @@
 <%@ page import="java.util.List"%>
 <%@ page import="org.json.JSONArray"%>
 <%@ page import="org.json.JSONObject"%>
-<%@ page import="com.icreon.bin.GetProjects" %>
+<%@ page import="com.icreon.login.service.GetProjects" %>
+<%@ page import="java.time.LocalDate" %>
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
@@ -64,6 +65,22 @@
     </style>
 
     <style>
+        .expand_hover{
+            max-width: 200px;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            word-break: break-all;
+            overflow:hidden;
+            white-space:nowrap;
+        }
+        .expand_hover:hover{
+            overflow: visible;
+            white-space: normal;
+            height:auto;  /* just added this line */
+        }
+    </style>
+
+    <style>
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
@@ -114,7 +131,7 @@
             margin: auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 80%;
+            width: 25%;
         }
 
         /* The Close Button */
@@ -138,7 +155,17 @@
 </head>
 <body class="size-1140">
 
+<%
+    if ((session.getAttribute("username") == null) || (session.getAttribute("username") == "")) {
+        out.println("<script type=\"text/javascript\">");
+        out.println("alert('Please login first to visit this page.');");
+        out.println("location='logout';");
+        out.println("</script>");
 
+
+
+    }
+%>
 
 
 
@@ -305,7 +332,7 @@
     body {
         margin: 0;
         padding: 0;
-        height: 1500px;
+        height: 500px;
     }
 </style>
 
@@ -335,8 +362,12 @@
                             <%
                                 try
                                 {
+                                    String username = (String)session.getAttribute("username");
+                                    String password = (String)session.getAttribute("password");
+
+
                                     GetProjects gp=new GetProjects();
-                                    JSONArray jsonResults=gp.getProjectsInfo();
+                                    JSONArray jsonResults=gp.getProjectsInfo(username,password);
                                     for(int i=0; i < jsonResults.length();i++){
 
                             %>
@@ -374,7 +405,13 @@
 
                     <div class="col-sm-4">
                         <label for="" class="thick"><b>From Date</b><span style="color:red;"></span></label>
-                        <input class="form-control" type="date"  autocomplete="off" name="FromDate" value=" " placeholder="Enter From Date"  id="FromDate" />
+                        <%
+                            WorklogsDaoImpl objDate = new WorklogsDaoImpl();
+                            LocalDate str=objDate.dayMinusSeven();
+                            System.out.println("Localdate is...." +str);
+                        %>
+
+                        <input class="form-control" type="date"  autocomplete="off" name="FromDate" value="<%=str%>" placeholder="Enter From Date"  id="FromDate" />
                     </div>
 
                     <div class="col-sm-4">
@@ -489,7 +526,7 @@
                             <td><%=ob[1]%></td>
                             <td><%=ob[3]%></td>
 
-                            <td><%=ob[4]%></td>
+                            <td class ="expand_hover"><%=ob[4]%></td>
                             <td><%=ob[5]%></td>
                             <td><%=ob[6]%> hours</td>
                             <!-- 		       	         <td><b><span style="color:blue">NOT APPROVED</b></span></td> -->
@@ -617,6 +654,18 @@
     }); </script>
 
 
+<%--
+<script type="text/javascript">
+    $('#issues').html($('#issues option').val(function(){
+        return this.text.match(/\d+/);
+    }).sort(function (a, b) {
+        var a = parseInt(a.value,10), b = parseInt(b.value,10);
+        return a < b ? -1 : 1;
+    }));
+
+</script>
+--%>
+
 
 <script type="text/javascript">
     $category = $('#projects');
@@ -675,11 +724,13 @@
                 success: function(data){
                     $('#user').empty();
                     //	alert(data);
+                    var  issueName=document.getElementById('issues').value;
                     var list = "";
                     var list = jQuery.parseJSON(data);
                     if(list=='')
                     {
-                        alert('Records Not Available');
+                        $('#user').append('<option value="0">Select</option>');
+                        alert('No Resources are Associated with '+issueName);
                     }
                     if(list!=''){
                         $('#user').append('<option value="0">Select</option>');
@@ -731,7 +782,7 @@
                 var list = jQuery.parseJSON(data);
                 if(list==1)
                 {
-                    alert('Approved and Sent Notification by Mail');
+                  //  alert('Approved and Sent Notification by Mail');
 
                     //$("#st").hide();
                     document.getElementById(ab).value='Approved';
@@ -739,6 +790,7 @@
                     document.getElementById(ab).disabled = true;
                     //  	$("#aprv").text("Approved");
                     modal.style.display = "none";
+                    window.location.href = "index.jsp";
 
                 }
 
@@ -781,7 +833,7 @@
                 var list = jQuery.parseJSON(data);
                 if(list==1)
                 {
-                    alert('Rejected Sent Notification by Mail');
+                  //  alert('Rejected Sent Notification by Mail');
                     // 	$('#ab').val('Hello');
 
                     document.getElementById(ab).value='Rejected';
@@ -790,6 +842,7 @@
                     //    	$("#rejc").text("Rejected");
                     //document.getElementById(st1).disabled = true;
                     modal.style.display = "none";
+                    window.location.href = "index.jsp";
                 }
 
 
@@ -807,6 +860,17 @@
 <script  type="text/javascript">
     $(document).ready(function () {
         $('#ex1').DataTable({
+            language: {
+                paginate: {
+                    next: '&#8594;', // or '→'
+                    previous: '&#8592;' // or '←'
+                }
+            },
+            "fnDrawCallback": function(oSettings) {
+                if ($('#ex1 tr').length < 24) {
+                    $('.dataTables_paginate').hide();
+                }
+            },
             "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
 
             dom: 'Bfrtip',
@@ -826,7 +890,28 @@
 
 </script>
 
+<script type="text/javascript">
+    var date = new Date();
 
+    var day = date.getDate();
+    var month = date.getMonth() + 1;
+    var year = date.getFullYear();
+
+    if (month < 10) month = "0" + month;
+    if (day < 10) day = "0" + day;
+
+    var today = year + "-" + month + "-" + day;
+    document.getElementById("ToDate").value = today;
+
+
+</script>
+<%--
+<script type="text/javascript">
+    $('#reset').on("click",function() {
+
+        document.getElementById("FromDate").value = empty();
+
+    }); </script>--%>
 
 
 

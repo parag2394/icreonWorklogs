@@ -60,6 +60,22 @@
     </style>
 
     <style>
+        .expand_hover{
+            max-width: 200px;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            word-break: break-all;
+            overflow:hidden;
+            white-space:nowrap;
+        }
+        .expand_hover:hover{
+            overflow: visible;
+            white-space: normal;
+            height:auto;  /* just added this line */
+        }
+    </style>
+
+    <style>
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
@@ -94,6 +110,17 @@
 </head>
 <body class="size-1140">
 
+<%
+    if ((session.getAttribute("username") == null) || (session.getAttribute("username") == "")) {
+        out.println("<script type=\"text/javascript\">");
+        out.println("alert('Please login first to visit this page.');");
+        out.println("location='logout';");
+        out.println("</script>");
+
+
+
+    }
+%>
 
 
 
@@ -257,7 +284,7 @@
     body {
         margin: 0;
         padding: 0;
-        height: 1500px;
+        height: 500px;
     }
 </style>
 
@@ -325,10 +352,10 @@
                             <td><%=ob[1]%></td>
                             <td><%=ob[3]%></td>
 
-                            <td><%=ob[4]%></td>
+                            <td class ="expand_hover"><%=ob[4]%></td>
                             <td><%=ob[5]%></td>
                             <td><%=ob[6]%> hours</td>
-                            <td><b><span style="color:blue">APPROVED</b></span></td>
+                            <td><b><span style="color:blue">APPROVED</span></b></td>
 
 
                         </tr>
@@ -402,6 +429,17 @@
 <script  type="text/javascript">
     $(document).ready(function () {
         $('#ex1').DataTable({
+            language: {
+                paginate: {
+                    next: '&#8594;', // or '→'
+                    previous: '&#8592;' // or '←'
+                }
+            },
+            "fnDrawCallback": function(oSettings) {
+                if ($('#ex1 tr').length < 24) {
+                    $('.dataTables_paginate').hide();
+                }
+            },
             "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
 
             dom: 'Bfrtip',

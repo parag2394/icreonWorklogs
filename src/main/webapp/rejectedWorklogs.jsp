@@ -60,6 +60,23 @@
     </style>
 
     <style>
+        .expand_hover{
+            max-width: 200px;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            word-break: break-all;
+            overflow:hidden;
+            white-space:nowrap;
+        }
+        .expand_hover:hover{
+            overflow: visible;
+            white-space: normal;
+            height:auto;  /* just added this line */
+        }
+    </style>
+
+
+    <style>
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
@@ -111,7 +128,7 @@
             margin: auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 80%;
+            width: 25%;
         }
 
         /* The Close Button */
@@ -130,12 +147,21 @@
         }
 
 
-
     </style>
 </head>
 <body class="size-1140">
 
+<%
+    if ((session.getAttribute("username") == null) || (session.getAttribute("username") == "")) {
+        out.println("<script type=\"text/javascript\">");
+        out.println("alert('Please login first to visit this page.');");
+        out.println("location='logout';");
+        out.println("</script>");
 
+
+
+    }
+%>
 
 
 
@@ -154,7 +180,7 @@
     <a  href="approvedWorklogs.jsp">Approved Worklogs</a>
     <a href="unApprovedWorklogs.jsp">Pending Worklogs</a>
     <a class="active" href="rejectedWorklogs.jsp">Rejected Worklogs</a>
-    <a href="logout" align="right">Logout</a>
+    <a href="logout" style="float:right">Logout</a>
 </div>
 
 <!-- <b>#6b1381</b> -->
@@ -298,7 +324,7 @@
     body {
         margin: 0;
         padding: 0;
-        height: 1500px;
+        height: 500px;
     }
 </style>
 
@@ -390,10 +416,10 @@
                             <td><%=ob[1]%></td>
                             <td><%=ob[3]%></td>
 
-                            <td><%=ob[4]%></td>
+                            <td class ="expand_hover"><%=ob[4]%></td>
                             <td><%=ob[5]%></td>
                             <td><%=ob[6]%> hours</td>
-                            <td><b><span style="color:blue">REJECTED</b></span></td>
+                            <td><b><span style="color:blue">REJECTED</span></b></td>
                             <td>
                                 <input type="hidden" id="p_project<%=j%>" value="<%=project_id%>" >
                                 <input type="hidden" id="p_worklog<%=j%>" value="<%=worklog_id%>" >
@@ -500,7 +526,7 @@
                 var list = jQuery.parseJSON(data);
                 if(list==1)
                 {
-                    alert('Approved and Sent Notification by Mail');
+                    // alert('Approved and Sent Notification by Mail');
                     // 	$('#ab').val('Hello');
                     //  	document.getElementById(ab).value='Approved';
                     //  	document.getElementById(ab).disabled = true;
@@ -521,6 +547,17 @@
 <script  type="text/javascript">
     $(document).ready(function () {
         $('#ex1').DataTable({
+            language: {
+                paginate: {
+                    next: '&#8594;', // or '→'
+                    previous: '&#8592;' // or '←'
+                }
+            },
+            "fnDrawCallback": function(oSettings) {
+                if ($('#ex1 tr').length < 24) {
+                    $('.dataTables_paginate').hide();
+                }
+            },
             "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
 
             dom: 'Bfrtip',

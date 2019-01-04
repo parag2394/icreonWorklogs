@@ -60,6 +60,22 @@
     </style>
 
     <style>
+        .expand_hover{
+            max-width: 200px;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            word-break: break-all;
+            overflow:hidden;
+            white-space:nowrap;
+        }
+        .expand_hover:hover{
+            overflow: visible;
+            white-space: normal;
+            height:auto;  /* just added this line */
+        }
+    </style>
+
+    <style>
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
@@ -88,11 +104,63 @@
             background-color: #6b1381;
             color: white;
         }
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 25%;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+
+
     </style>
 </head>
 <body class="size-1140">
 
+<%
+    if ((session.getAttribute("username") == null) || (session.getAttribute("username") == "")) {
+        out.println("<script type=\"text/javascript\">");
+        out.println("alert('Please login first to visit this page.');");
+        out.println("location='logout';");
+        out.println("</script>");
 
+
+
+    }
+%>
 
 
 
@@ -255,7 +323,7 @@
     body {
         margin: 0;
         padding: 0;
-        height: 1500px;
+        height: 500px;
     }
 </style>
 
@@ -270,6 +338,19 @@
 <form>
     <div class="container1 container-White py-10">
 
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <div id="divImage" style="height:50px;width:50px">
+                    <img src="https://media.giphy.com/media/xTk9ZvMnbIiIew7IpW/giphy.gif" >
+                </div>
+                <p>Processing... Please wait (It may take few seconds)</p>
+            </div>
+
+        </div>
 
 
         <!--           <div class="row"> -->
@@ -299,6 +380,7 @@
                             <td ><h6>Resource</h6></td>
                             <td ><h6>Time Logged</h6></td>
                             <td><h6>Status</h6></td>
+                            <td><h6>Review</h6></td>
 
                         </tr>
                         </thead>
@@ -310,24 +392,60 @@
                                 {
                                     WorklogsDaoImpl wd=new WorklogsDaoImpl();
                                     List<Object[]> obj=wd.unApprovedWorklog();
-                                    int i=0;
+                                    int j=0;
                                     for(Object[] ob : obj)
                                     {
-                                        ++i;
+                                        ++j;
+                                        String project_id=(String)ob[0];
+                                        String worklog_id=(String)ob[1];
+                                        String issue_id=(String)ob[2];
 
                             %>
-                            <td><%=i%></td>
+                            <td><%=j%></td>
                             <td><%=ob[0]%></td>
 
                          <%--   <td><%=ob[2]%></td>--%>
                             <td><%=ob[1]%></td>
                             <td><%=ob[3]%></td>
 
-                            <td><%=ob[4]%></td>
+                            <td class ="expand_hover"><%=ob[4]%></td>
                             <td><%=ob[5]%></td>
                             <td><%=ob[6]%> hours</td>
-                            <td><b><span style="color:blue">NOT APPROVED</b></span></td>
+                            <td><b><span style="color:blue">Pending</span></b></td>
+                            <td>
+                                <%
+                                    int status=(Integer)ob[7];
+                                    if(status==2)
+                                    {
+                                %>
+                                <input type="hidden" id="p_project<%=j%>" value="<%=project_id%>" >
+                                <input type="hidden" id="p_worklog<%=j%>" value="<%=worklog_id%>" >
+                                <input type="hidden" id="p_issue<%=j%>" value="<%=issue_id%>" >
+                                <input class="btn btn-primary" type="button" value="Approve" id="approve_button<%=j%>"
+                                       onclick="confirmation('p_project<%=j%>','p_worklog<%=j%>','p_issue<%=j%>','approve_button<%=j%>','reject_button<%=j%>','appr<%=j%>')" />
+                                <input class="btn btn-primary" type="button" value="Reject" id="reject_button<%=j%>"
+                                       onclick="rejection('p_project<%=j%>','p_worklog<%=j%>','p_issue<%=j%>','reject_button<%=j%>','approve_button<%=j%>','rej<%=j%>')" />
+                                <b style="display:none;">Not Approved</b>
+                                <%  }
+                                %>
 
+                                <%    if(status==1)
+                                {
+                                %>
+                                <input class="btn btn-primary" type="button"  value="Approved" id="" disabled/>
+                                <p id="appr<%=j%>"><b  style="display:none;">Approved</b></p>
+                                <%  }
+
+                                    if(status==0)
+                                    {
+                                %>
+                                <input class="btn btn-primary" type="button"  value="Rejected" id="" disabled/>
+                                <p id="rej<%=j%>" ><b style="display:none;">Rejected</b></p>
+                                <%  }
+                                %>
+
+
+                            </td>
 
                         </tr>
                         <%
@@ -400,6 +518,17 @@
 <script  type="text/javascript">
     $(document).ready(function () {
         $('#ex1').DataTable({
+            language: {
+                paginate: {
+                    next: '&#8594;', // or '→'
+                    previous: '&#8592;' // or '←'
+                }
+            },
+            "fnDrawCallback": function(oSettings) {
+                if ($('#ex1 tr').length < 24) {
+                    $('.dataTables_paginate').hide();
+                }
+            },
             "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
 
             dom: 'Bfrtip',
@@ -407,12 +536,12 @@
                 'excel', 'print'
             ]
         });
+
         $('#ex1').on( 'page.dt', function () {
             $('html, body').animate({
                 scrollTop: 0
             }, 300);
         } );
-
     });
 
 
@@ -420,6 +549,108 @@
 </script>
 
 
+<script>
+    function confirmation(p,w,i,ab,st,aprv)
+    {
+
+        // Get the modal
+        var modal = document.getElementById('myModal');
+        modal.style.display = "block";
+
+        var x=document.getElementById(p).value;
+        var y=document.getElementById(w).value;
+        var z=document.getElementById(i).value;
+        //  var status_code=document.getElementById(aprv).value;
+        // alert(status_code);
+        //  alert(y);
+        //   alert(z);
+        //alert(ab);
+        $.ajax({
+            type: 'GET',
+            url: "updateApproveStatus",
+            data: {
+                project_id:x,
+                worklog_id:y,
+                issue_id:z
+            },
+            success:function(data)
+            {
+
+                //	alert(data);
+                var list = "";
+                var list = jQuery.parseJSON(data);
+                if(list==1)
+                {
+                    //  alert('Approved and Sent Notification by Mail');
+
+                    //$("#st").hide();
+                    document.getElementById(ab).value='Approved';
+                    document.getElementById(st).style.visibility = "hidden";
+                    document.getElementById(ab).disabled = true;
+                    //  	$("#aprv").text("Approved");
+                    modal.style.display = "none";
+                    window.location.href = "unApprovedWorklogs.jsp";
+
+                }
+
+
+
+
+            }
+        });
+    }
+</script>
+
+
+<script>
+    function rejection(p,w,i,ab,st1,rejc)
+    {
+        // Get the modal
+        var modal = document.getElementById('myModal');
+        modal.style.display = "block";
+
+        var x=document.getElementById(p).value;
+        var y=document.getElementById(w).value;
+        var z=document.getElementById(i).value;
+        //  alert(x);
+        //  alert(y);
+        //   alert(z);
+        //alert(ab);
+        $.ajax({
+            type: 'GET',
+            url: "updateApproveStatusToReject",
+            data: {
+                project_id:x,
+                worklog_id:y,
+                issue_id:z
+            },
+            success:function(data)
+            {
+
+                //	alert(data);
+                var list = "";
+                var list = jQuery.parseJSON(data);
+                if(list==1)
+                {
+                    //  alert('Rejected Sent Notification by Mail');
+                    // 	$('#ab').val('Hello');
+
+                    document.getElementById(ab).value='Rejected';
+                    document.getElementById(st1).style.visibility = "hidden";
+                    document.getElementById(ab).disabled = true;
+                    //    	$("#rejc").text("Rejected");
+                    //document.getElementById(st1).disabled = true;
+                    modal.style.display = "none";
+                    window.location.href = "unApprovedWorklogs.jsp";
+                }
+
+
+
+
+            }
+        });
+    }
+</script>
 
 
 

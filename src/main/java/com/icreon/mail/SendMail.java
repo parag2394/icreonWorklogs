@@ -4,17 +4,17 @@ package com.icreon.mail;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
 import java.util.Map;
 import java.util.Properties;
 
+import static com.icreon.util.ApplicationConstants.NOTIFICATION_SENDER_PASSWORD;
+import static com.icreon.util.ApplicationConstants.NOTIFICATION_SENDER_USERNAME;
+
+@Service
 public class SendMail{
-
-        final String username = "apitesting02@gmail.com";
-      //  final String username = "parag.chaudhari@icreon.com";
-        final String password = "qwerty@123";
-
 
         public String sendEmail(final String subject,final String body,final String userEmailId) {
 
@@ -25,8 +25,8 @@ public class SendMail{
             mailSender.setHost("smtp.gmail.com");
         //    mailSender.setHost("smtp.office365.com");
             mailSender.setPort(587);
-            mailSender.setUsername(username);
-            mailSender.setPassword(password);
+            mailSender.setUsername(NOTIFICATION_SENDER_USERNAME);
+            mailSender.setPassword(NOTIFICATION_SENDER_PASSWORD);
 
             Properties javaMailProperties = new Properties();
             javaMailProperties.put("mail.smtp.starttls.enable", "true");
@@ -53,16 +53,17 @@ public class SendMail{
         return "Mail Sent Successfully.";
 }
 
-        public boolean prepare_mail(Map<String, String> userMap, String p_issue_id,String to_status){
+        public boolean prepare_mail(String p_project_id,Map<String, String> userMap, String p_issue_id,String to_status){
 
             String userName = userMap.get("Name");
             String userDate = userMap.get("Date");
+            String timeSpent = userMap.get("Time");
+            String description = userMap.get("Description");
 
             //    String userEmailId = userMap.get("Email");
               String userEmailId = "apitesting02@gmail.com";
-            //  String userEmailId = "parag.chaudhari@icreon.com";
 
-            String body = "Hi "+userName+",\n Your time log has been "+to_status+".\n Details: Issue: "+p_issue_id+"\n Date: "+userDate+"\n Thank you";
+            String body = "Hi "+userName+",\n\n Your time log of " + timeSpent + "hrs" + " has been "+to_status+".\n Details:\n  Project: " +p_project_id+ "\n  Issue: "+p_issue_id+"\n  Date: "+userDate+"\n  Description: " +description+"\n\nThank you";
             String subject = "Time Log Approved in JIRA";
 
             sendEmail(subject,body,userEmailId);

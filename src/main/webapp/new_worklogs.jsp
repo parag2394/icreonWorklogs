@@ -1,9 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="com.icreon.*" %>
+<%@ page import="com.icreon.worklogs.daoImpl.*" %>
 <%@ page import="java.util.Iterator"%>
 <%@ page import="java.util.List"%>
 <%@ page import="org.json.JSONArray"%>
 <%@ page import="org.json.JSONObject"%>
+<%@ page import="com.icreon.login.service.GetProjects" %>
 <!DOCTYPE html>
 <html lang="en-US">
 <head>
@@ -58,6 +60,22 @@
     </style>
 
     <style>
+        .expand_hover{
+            max-width: 200px;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            word-break: break-all;
+            overflow:hidden;
+            white-space:nowrap;
+        }
+        .expand_hover:hover{
+            overflow: visible;
+            white-space: normal;
+            height:auto;  /* just added this line */
+        }
+    </style>
+
+    <style>
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
@@ -108,7 +126,7 @@
             margin: auto;
             padding: 20px;
             border: 1px solid #888;
-            width: 80%;
+            width: 25%;
         }
 
         /* The Close Button */
@@ -130,7 +148,17 @@
 </head>
 <body class="size-1140">
 
+<%
+    if ((session.getAttribute("username") == null) || (session.getAttribute("username") == "")) {
+        out.println("<script type=\"text/javascript\">");
+        out.println("alert('Please login first to visit this page.');");
+        out.println("location='logout';");
+        out.println("</script>");
 
+
+
+    }
+%>
 
 
 
@@ -299,10 +327,125 @@
     body {
         margin: 0;
         padding: 0;
-        height: 1500px;
+        height: 500px;
     }
 </style>
 
+
+
+
+<form action="getSelectedWorklogs" method="post">
+    <!-- You need this element to prevent the content of the page from jumping up -->
+
+
+
+
+    <!-- TOP NAV WITH LOGO -->
+
+
+
+
+    <div class="container1 container-White py-10">
+
+        <a href="index.jsp"><-- Back to Search</a>
+
+        <div class="row">
+            <div class="col-md-10 mx-auto">
+                <div class="form-group row">
+
+                    <div class="col-sm-4">
+                        <label for="" class="thick"><b>Select Project</b><span style="color:red;">*</span></label>
+                        <select name="projects" size="1" id="projects" required="" class="form-control">
+                            <option value="<%=request.getParameter("projects")%>" ><%= request.getParameter("projects")%></option>
+                            <%
+                                try
+                                {
+                                    String username = (String)session.getAttribute("username");
+                                    String password = (String)session.getAttribute("password");
+
+
+
+                                    GetProjects gp=new GetProjects();
+                                    JSONArray jsonResults=gp.getProjectsInfo(username,password);
+                                    for(int i=0; i < jsonResults.length();i++){
+
+                            %>
+                            <option value=<%=jsonResults.getJSONObject(i).get("key")%>><%=jsonResults.getJSONObject(i).get("name") %></option>
+                            <%
+                                    }//for
+                                }
+                                catch(Exception e)
+                                {
+                                    e.printStackTrace();
+                                }
+                            %>
+
+                        </select>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label for="" class="thick"><b>Select Issue</b><span style="color:red;">*</span></label>
+                        <select name="issues" size="1" id="issues" class="form-control" required>
+                            <option value="<%=request.getParameter("issue")%>" ><%=request.getParameter("issue")%></option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label for="" class="thick"><b>Select Resource</b></label>
+                        <select name="user" size="1" id="user" class="form-control">
+                            <option value="0" >Select</option>
+                            <!-- <option value="Ravi Kumar">Ravi Kumar</option> -->
+                            <!-- <option value="Rohit Phutane">Rohit Phutane</option> -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+
+                    <div class="col-sm-4">
+                        <label for="" class="thick"><b>From Date</b><span style="color:red;"></span></label>
+                        <input class="form-control" type="date"  autocomplete="off" name="FromDate" value="" placeholder="Enter From Date"  id="FromDate" />
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label for="" class="thick"><b>To Date</b><span style="color:red;"></span></label>
+                        <input class="form-control" type="date" autocomplete="off" value="" name="ToDate" placeholder="Enter To Date" id="ToDate" />
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label for="" class="thick"><b>Status</b><span style="color:red;"></span></label>
+                        <select name="status" size="1" id="status" required="" class="form-control">
+                            <option value="-1" >Select</option>
+                            <option value="1">Approved Worklogs</option>
+                            <option value="2">Pending Worklogs</option>
+                            <option value="0">Rejected Worklogs</option>
+                        </select>
+                    </div>
+
+
+
+                </div>
+
+
+                <p>All (<span style="color:red;">*</span>) fields are mandatory.
+
+                <div class="form-group row" >
+                    <div class="col-sm-5"></div>
+                    <input class="btn btn-primary" type="submit"  value="Submit" id="submit_button"/>&nbsp;&nbsp;
+                    <input class="btn btn-primary" type="reset"  value="Reset" id="reset"/>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+</form>
+
+<br>
 
 <form>
 
@@ -409,12 +552,14 @@
                                 //GetWorklogs gw=new GetWorklogs();
                                 if(request.getAttribute("JSON_RESULT")==null || request.getAttribute("JSON_RESULT")=="")
                                 {
-                                    out.println("Action Not Allowed");
+                                   // out.println("Action Not Allowed");
                                     response.sendRedirect("home");
                                 }
                                 else
                                 {
-                                    List<Object[]> l=(List<Object[]>)request.getAttribute("JSON_RESULT");
+                                   %>
+                        <input type="hidden" id="JSON_RESULT" value="<%=request.getAttribute("JSON_RESULT")%>">
+                                  <%  List<Object[]> l=(List<Object[]>)request.getAttribute("JSON_RESULT");
 
 
                                     int j=0;
@@ -435,7 +580,7 @@
                         <td><%=obj[1]%></td>
                         <td><%=obj[3]%></td>
 
-                        <td><%=obj[4]%></td>
+                        <td class ="expand_hover"><%=obj[4]%></td>
                         <td><%=obj[5]%></td>
                         <td><%=obj[6]%> hours</td>
 
@@ -514,6 +659,107 @@
 
 <script src="resources/js/jquery-1.8.3.min.js"></script>
 
+<script type="text/javascript">
+    $('#submit_button').on("click",function() {
+        if (document.getElementById('projects').value=="0") {
+            document.getElementById('projects').focus();
+            alert("Please select project");
+            return false;
+        }
+
+        if (document.getElementById('issues').value=="0") {
+            document.getElementById('issues').focus();
+            alert("Please select issue");
+            return false;
+        }
+    }); </script>
+
+
+
+<script type="text/javascript">
+    $category = $('#projects');
+
+    $category.change (
+
+        function() {
+
+            //	alert('Calling Controller');
+
+            $.ajax({
+                type: "POST",
+                url: "getAllIssuesInProject",
+                data: {projects: document.getElementById('projects').value },
+                success: function(data){
+                    $('#issues').empty();
+                    //	alert(data);
+                    var list = "";
+                    var list = jQuery.parseJSON(data);
+                    if(list=='')
+                    {
+                        alert('Records Not Available for Selected Data');
+                    }
+                    if(list!=''){
+                        $('#issues').append('<option value="0">Select</option>');
+                        for (var i = 0; i < list.length; i++) {
+                            $('#issues').append('<option value="' + list[i] + '">' + list[i]+ '</option>');
+
+                        }
+
+                    }
+
+
+                }
+            });
+
+        }
+    );
+
+</script>
+
+
+<script type="text/javascript">
+    $category = $('#issues');
+
+    $category.change (
+
+        function() {
+
+            //	alert('Calling Controller');
+
+            $.ajax({
+                type: "POST",
+                url: "getAuthors",
+                data: {issue: document.getElementById('issues').value },
+                success: function(data){
+                    $('#user').empty();
+                    //	alert(data);
+                    var  issueName=document.getElementById('issues').value;
+                    var list = "";
+                    var list = jQuery.parseJSON(data);
+                    if(list=='')
+                    {
+                        $('#user').append('<option value="0">Select</option>');
+                        alert('No Resources are Associated with '+issueName);
+                    }
+                    if(list!=''){
+                        $('#user').append('<option value="0">Select</option>');
+                        for (var i = 0; i < list.length; i++) {
+                            $('#user').append('<option value="' + list[i] + '">' + list[i]+ '</option>');
+
+                        }
+
+                    }
+
+
+                }
+            });
+
+        }
+    );
+
+</script>
+
+
 <script>
     function confirmation(p,w,i,ab,st)
     {
@@ -549,7 +795,7 @@
                 var list = jQuery.parseJSON(data);
                 if(list==1)
                 {
-                    alert('Approved and Sent Notification by Mail');
+                  //  alert('Approved and Sent Notification by Mail');
 
                     //$("#st").hide();
                     document.getElementById(ab).value='Approved';
@@ -557,6 +803,9 @@
                     document.getElementById(ab).disabled = true;
 
                     modal.style.display = "none";
+
+                    location.reload(false);
+
                 }
 
 
@@ -599,7 +848,7 @@
                 var list = jQuery.parseJSON(data);
                 if(list==1)
                 {
-                    alert('Rejected Sent Notification by Mail');
+                 //   alert('Rejected Sent Notification by Mail');
                     // 	$('#ab').val('Hello');
 
                     document.getElementById(ab).value='Rejected';
@@ -608,6 +857,12 @@
                     //document.getElementById(st1).disabled = true;
 
                     modal.style.display = "none";
+                    location.reload(false);
+                    //window.location.href = window.location.href + "?search=" + escape( $("#someId").val());
+                //    window.location.href = "new_worklogs.jsp"; JSON_RESULT
+                /*    alert(document.getElementById("#JSON_RESULT").valueOf());
+                    window.location.href ="new_worklogs.jsp"+"?"+"JSON_RESULT="+escape( $("#JSON_RESULT").val());*/
+                //    window.location.href = window.location.href + "?search=" + escape( $("#someId").val());
                 }
 
 
@@ -652,6 +907,17 @@
 <script  type="text/javascript">
     $(document).ready(function () {
         $('#ex1').DataTable({
+            language: {
+                paginate: {
+                    next: '&#8594;', // or '→'
+                    previous: '&#8592;' // or '←'
+                }
+            },
+            "fnDrawCallback": function(oSettings) {
+                if ($('#ex1 tr').length < 24) {
+                    $('.dataTables_paginate').hide();
+                }
+            },
             "lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
 
             dom: 'Bfrtip',
@@ -678,7 +944,16 @@
 </script>
 
 
+<script type="text/javascript">
+    $('#reset').on("click",function() {
 
+        $('#projects').empty();
+        $('#projects').append('<option value="0">Select</option>');
+
+        $('#issues').empty();
+        $('#issues').append('<option value="0">Select</option>');
+
+    }); </script>
 
 
 

@@ -49,7 +49,8 @@
 	
 			<div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
 		
-				<form class="login100-form validate-form flex-sb flex-w" action="Welcome" method="post">  
+				<%--<form class="login100-form validate-form flex-sb flex-w" action="Welcome" method="post">--%>
+				<form class="login100-form validate-form flex-sb flex-w" action="authenticate" method="post">
 				  
 					<span class="login100-form-title p-b-53">
 						<b style="color:#831A9D;">ICREON Jira Portal</b>
@@ -59,11 +60,11 @@
 					
 					<div class="p-t-31 p-b-9">
 						<span class="txt1">
-							Username
+							Email
 						</span>
 					</div>
-					<div class="wrap-input100 validate-input" data-validate = "Username is required">
-						<input class="input100" type="text" name="username" id="username" placeholder="Please Enter Your Username" >
+					<div class="wrap-input100 validate-input" data-validate = "Email is required">
+						<input class="input100" type="email" name="username" id="username" placeholder="Please Enter Your Email" >
 						<span class="focus-input100"></span>
 					</div>
 					
@@ -82,7 +83,18 @@
 						<input class="input100" type="password" name="password" id="password" placeholder="Please Enter Your Password">
 						<span class="focus-input100"></span>
 					</div>
-					
+
+
+					<%--<div class="p-t-13 p-b-9">
+						<span class="txt1">
+							Token
+						</span>
+					</div>
+					<div class="wrap-input100 validate-input" data-validate = "Token is required">
+						<input class="input100" type="text" name="token" id="token" placeholder="Please Enter Your Tempo Token Password">
+						<span class="focus-input100"></span>
+					</div>
+					--%>
 					
 	<!--				
 					<div class="p-t-13 p-b-9">
@@ -138,6 +150,7 @@
 <!--===============================================================================================-->
 	<script src="resources/resources/Login_v5/js/main.js"></script>
 
+<%--
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js"></script>
 <script type="text/javascript">
 function mySubmit(obj)
@@ -150,6 +163,7 @@ function mySubmit(obj)
 	//alert(hash);
 	}
 </script>
+--%>
 
 
 </body>

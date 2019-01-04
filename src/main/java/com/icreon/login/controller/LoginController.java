@@ -20,6 +20,7 @@ import java.math.BigInteger;
 @Controller
 public class LoginController {
 
+
 	@RequestMapping("Welcome")
 	public ModelAndView validateUser(@RequestParam("username")String username,@RequestParam("password")String password,HttpServletRequest request,HttpServletResponse response,HttpSession session)throws Throwable
 	{
@@ -75,5 +76,54 @@ public class LoginController {
 
 		return mv;
 	}
+
+	@RequestMapping("authenticate")
+	public ModelAndView validateUserWithJira(@RequestParam("username")String username,@RequestParam("password")String password
+			,HttpServletRequest request,HttpServletResponse response,HttpSession session)throws Throwable
+	{
+		PrintWriter out = response.getWriter(  );
+		response.setContentType("text/html");
+		ModelAndView mv=new ModelAndView();
+		try
+		{
+			System.out.println(username);
+			System.out.println(password);
+			AccessLoginDAO login=new AccessLoginDAO();
+			int userResponse =login.validateUser_withJIRA(request.getParameter("username"),request.getParameter("password"));
+
+
+			if(!(userResponse==200))
+			{
+				out.println("<script type=\"text/javascript\">");
+				out.println("alert('Incorrect username or password');");
+				out.println("location='login';");
+				out.println("</script>");
+				//	mv.setViewName("login.jsp");
+			}
+			else
+			{
+					Login l=new Login();
+					l.setUsername(username);
+					l.setPassword(password);
+					//l.setToken(token);
+
+					session.setAttribute("username",l.getUsername() );
+					session.setAttribute("password",l.getPassword());
+					//session.setAttribute("token",l.getToken());
+					mv.setViewName("home");
+			}
+
+			}
+
+		catch (Exception e)
+		{
+			e.printStackTrace();
+
+		}
+
+		return mv;
+	}
+
+
 
 }
