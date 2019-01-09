@@ -405,13 +405,13 @@
 
                     <div class="col-sm-4">
                         <label for="" class="thick"><b>From Date</b><span style="color:red;"></span></label>
-                        <%
+                       <%-- <%
                             WorklogsDaoImpl objDate = new WorklogsDaoImpl();
                             LocalDate str=objDate.dayMinusSeven();
                             System.out.println("Localdate is...." +str);
-                        %>
+                        %>--%>
 
-                        <input class="form-control" type="date"  autocomplete="off" name="FromDate" value="<%=str%>" placeholder="Enter From Date"  id="FromDate" />
+                        <input class="form-control" type="date"  autocomplete="off" name="FromDate" value=" " placeholder="Enter From Date"  id="FromDate" />
                     </div>
 
                     <div class="col-sm-4">
@@ -859,6 +859,11 @@
 
 <script  type="text/javascript">
     $(document).ready(function () {
+
+        var myDate = new Date();
+        document.getElementById('FromDate').valueAsDate = new Date(myDate.getTime() - (60*60*24*7*1000));
+
+
         $('#ex1').DataTable({
             language: {
                 paginate: {
