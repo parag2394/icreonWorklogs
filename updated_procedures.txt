@@ -1,0 +1,205 @@
+DELIMITER //
+CREATE  PROCEDURE authenticate_user(
+IN p_username varchar(100),
+IN p_password varchar(400)
+
+ )
+BEGIN
+   SELECT userid,username,password,name from tbl_userdtl where username=p_username AND password=p_password;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_approveAll(IN p_worklog_id varchar(30))
+BEGIN
+   update tbl_worklogs set status=1 where worklog_id=p_worklog_id;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_getAllWorklogs()
+BEGIN
+   Select project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created from tbl_worklogs;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_getApprovedWorklogs()
+BEGIN
+   Select project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created from tbl_worklogs where status=1;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_getAuthors(IN p_issue_id varchar(50))
+BEGIN
+   Select distinct author FROM tbl_worklogs where issue_id=p_issue_id;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_getLastSevenDaysWorklogs()
+BEGIN
+   Select project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created from tbl_worklogs where
+    start_date>=(CURDATE() - INTERVAL 7 DAY) and start_date<=curdate();
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_getRejectedWorklogs()
+BEGIN
+   Select project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created from tbl_worklogs where status=0;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_getUnApprovedWorklogs()
+BEGIN
+   Select project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created from tbl_worklogs where status=2;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_getWorklogs_wrt_all(
+IN p_issue_id varchar(50),
+IN p_author varchar(50),
+IN p_from_date varchar(20),
+IN p_to_date varchar(20)
+ )
+BEGIN
+   Select project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created from tbl_worklogs 
+   where issue_id=p_issue_id and start_date >=STR_TO_DATE(p_from_date,'%Y-%m-%d') and start_date <= STR_TO_DATE(p_to_date,'%Y-%m-%d') and author=p_author;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_getWorklogs_wrt_all_and_status(
+IN p_issue_id varchar(50),
+IN p_author varchar(50),
+IN p_from_date varchar(20),
+IN p_to_date varchar(20),
+IN p_status int(2)
+ )
+BEGIN
+   Select project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created from tbl_worklogs 
+   where issue_id=p_issue_id and start_date >=STR_TO_DATE(p_from_date,'%Y-%m-%d') and start_date <= STR_TO_DATE(p_to_date,'%Y-%m-%d') and author=p_author 
+   and status=p_status;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_getWorklogs_wrt_date(
+IN p_from_date date,
+IN p_to_date date
+ )
+BEGIN
+   Select project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created from tbl_worklogs
+   where start_date>=STR_TO_DATE(p_from_date,'%Y-%m-%d') and start_date<=STR_TO_DATE(p_to_date,'%Y-%m-%d');
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_getWorklogs_wrt_issue_ID(
+IN p_issue_id varchar(50)
+ )
+BEGIN
+   Select project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created from tbl_worklogs
+   where issue_id=p_issue_id;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE PROCEDURE pro_getWorklogs_wrt_issue_user(
+ IN p_issue_id varchar(50),
+IN p_author varchar(50)
+ )
+BEGIN
+   Select project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created from tbl_worklogs
+   where issue_id=p_issue_id and author=p_author;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_getWorklogs_wrt_user(
+IN p_author varchar(50)
+ )
+BEGIN
+   Select project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created from tbl_worklogs
+   where author=p_author;
+     END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_set_worklogs(
+IN p_project_id varchar(50),
+IN p_issue_id varchar(50),
+IN p_worklog_id varchar(50),
+IN p_start_date date,
+IN p_description varchar(500),
+IN p_author varchar(50),
+IN p_time_spent int(10),
+IN p_status int(2)
+ )
+BEGIN
+   INSERT into tbl_worklogs(project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,date_created) 
+   values(p_project_id,p_issue_id,p_worklog_id,p_start_date,p_description,p_author,p_time_spent,p_status,now());
+   END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_setWorklogs(
+IN p_project_id varchar(50),
+IN p_issue_id varchar(50),
+IN p_worklog_id varchar(50),
+IN p_start_date date,
+IN p_description varchar(2000),
+IN p_author varchar(50),
+IN p_time_spent int(10),
+IN p_status int(2),
+IN p_updated_date date
+ )
+BEGIN
+   INSERT into tbl_worklogs(project_id,issue_id,worklog_id,start_date,description,author,time_spent,status,updated_date,date_created) 
+   values(p_project_id,p_issue_id,p_worklog_id,STR_TO_DATE(p_start_date,'%Y-%m-%d'),p_description,p_author,p_time_spent,p_status,str_to_date(p_updated_date,'%Y-%m-%d'),now());
+   END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_setWorklogs_aprove_status(
+IN p_project_id varchar(100),
+IN p_issue_id varchar(50),
+IN p_worklog_id varchar(50)
+)
+BEGIN
+   update tbl_worklogs set status=1 where worklog_id=p_worklog_id;
+   END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_setWorklogs_reject_status(
+IN p_project_id varchar(100),
+IN p_issue_id varchar(50),
+IN p_worklog_id varchar(50)
+)
+BEGIN
+   update tbl_worklogs set status=0 where worklog_id=p_worklog_id;
+   END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE pro_setWorklogs_rejected_to_aprove_status(
+IN p_project_id varchar(100),
+IN p_issue_id varchar(50),
+IN p_worklog_id varchar(50)
+)
+BEGIN
+   update tbl_worklogs set status=1 where worklog_id=p_worklog_id and status=0;
+   END//
+DELIMITER ;
+
+DELIMITER //
+CREATE  PROCEDURE tbl_issues_1()
+BEGIN
+   SELECT *  FROM tbl_issues;
+   END//
+DELIMITER ;
